@@ -10,6 +10,10 @@ public class MapGen : MonoBehaviour
     public GameObject F_Block;
     public GameObject L_Block;
     public GameObject B_Block;
+
+    public GameObject Player;
+
+    private List<Vector3> SpawnPoints;
     void Start() {
         string[] lines = LevelMap.text.Replace("\r\n", "\n").Split('\n');
         int width = 0;
@@ -22,6 +26,7 @@ public class MapGen : MonoBehaviour
         float shift_z = -height * stride / 2.0f;
         int x = 0;
         int z = 0;
+        SpawnPoints = new List<Vector3>();
         foreach (var l in lines) {
             foreach (var c in l) {
                 GameObject sel = null;
@@ -31,6 +36,7 @@ public class MapGen : MonoBehaviour
                         break;
                     case 'F':
                         sel = F_Block;
+                        SpawnPoints.Add(new Vector3(shift_x + x * stride, 0, shift_z + z * stride));
                         break;
                     case 'L':
                         sel = L_Block;
@@ -47,5 +53,6 @@ public class MapGen : MonoBehaviour
             x = 0;
             ++z;
         }
+        Instantiate(Player, SpawnPoints[Random.Range(0, SpawnPoints.Count)], new Quaternion());
     }
 }
