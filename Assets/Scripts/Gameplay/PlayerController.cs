@@ -25,6 +25,5 @@ public class PlayerController : NetworkBehaviour
             Vector3 moveDir = MovementTouch.GetDirection();
             Controller.SimpleMove(CharacterSpeed * (new Vector3(moveDir.x, 0, moveDir.y)) * moveMag);
         }
-        
     }
 }

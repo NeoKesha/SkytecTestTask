@@ -21,7 +21,6 @@ public class TouchControl : MonoBehaviour
         Captured = false;
         Handle.transform.position = Center.transform.position;
         my_finger_id = -1;
-        my_finger_released = false;
     }
     // Update is called once per frame
     bool held = false;
@@ -29,9 +28,36 @@ public class TouchControl : MonoBehaviour
     bool released = false;
     Vector3 direction;
     float magnitude = 0.0f;
-    int last_touch_count = 0;
     int my_finger_id = -1;
-    bool my_finger_released = false;
+
+    private void MapTouchPhase(TouchPhase phase) {
+        switch (phase) {
+            case TouchPhase.Began:
+                pressed = true;
+                released = false;
+                held = false;
+                break;
+            case TouchPhase.Ended:
+                pressed = false;
+                held = false;
+                released = true;
+            break;
+            case TouchPhase.Moved:
+            case TouchPhase.Stationary:
+                pressed = false;
+                held = true;
+                released = false;
+            break;
+        }
+    }
+    private void Clear() {
+        released = false;
+        held = false;
+        pressed = false;
+        magnitude = 0;
+        direction = Vector3.zero;
+        my_finger_id = -1;
+    }
     void Update() {
         Vector3 center_position = Center.transform.position;
         Vector3 touch_position = center_position;
@@ -41,50 +67,44 @@ public class TouchControl : MonoBehaviour
         pressed = Input.GetMouseButtonDown(0);
         released = Input.GetMouseButtonUp(0);
 #elif UNITY_ANDROID
-        if (Input.touchCount > last_touch_count) {
-            pressed = true;
-            held = true;
-            released = false;
-        }
-        if (Input.touchCount < last_touch_count) {
-            pressed = false;
-            held = true;
-            my_finger_released = true;
-        }
-        last_touch_count = Input.touchCount;
-        if (Input.touchCount > 0) {
-            Touch[] touches = Input.touches;
-            float min_d = float.MaxValue;
-            Vector3 nearest = new Vector3(0, 0, 0);
-            int fid = -1;
-            foreach (var t in touches) {
-                Vector3 touch = new Vector3(t.position.x, t.position.y, 0);
-                float d = (center_position - touch).magnitude;
-                if (d < min_d) {
-                    min_d = d;
-                    nearest = touch;
-                    fid = t.fingerId;
-                    if (fid == my_finger_id && my_finger_released) {
-                        my_finger_released = false;
+        if (my_finger_id == -1) {
+            if (Input.touchCount > 0) {
+                foreach (var t in Input.touches) {
+                    Vector3 touch_pos = new Vector3(t.position.x, t.position.y, 0);
+                    float d = (touch_pos - center_position).magnitude;
+                    if (d <= r) { //accept touch only in area around center
+                        my_finger_id = t.fingerId;
+                        MapTouchPhase(t.phase);
+                        magnitude = d;
+                        touch_position = touch_pos;
+                        break;
                     }
                 }
-            }
-            touch_position = nearest;
-            if (min_d <= r && my_finger_id == -1) {
-                my_finger_id = fid;
-            }
-            if (my_finger_released) {
-                released = true;
+            } else {
+                Clear();
             }
         } else {
-            if (held) {
-                released = true;
-                held = false;
+            if (Input.touchCount > 0) {
+                bool preserevd_touch = false;
+                foreach (var t in Input.touches) {
+                    if (t.fingerId == my_finger_id) {
+                        Vector3 touch_pos = new Vector3(t.position.x, t.position.y, 0);
+                        MapTouchPhase(t.phase);
+                        magnitude = (touch_pos - center_position).magnitude;
+                        touch_position = touch_pos;
+                        preserevd_touch = true;
+                        break;
+                    }
+                }
+                if (!preserevd_touch) {
+                    Clear();
+                }
             } else {
-                released = false;
+                Clear();
             }
         }
 #endif
+
         float dist = (center_position - touch_position).magnitude;
         if (pressed && dist < r) {
             HandlePressed();
@@ -94,16 +114,11 @@ public class TouchControl : MonoBehaviour
             magnitude = 0;
         }
         if (held) {
-            magnitude = dist;
+            magnitude = Mathf.Min(r,dist);
             direction = (touch_position - center_position).normalized;
         }
         if (Captured) {
-            Vector3 max_position = (touch_position-center_position).normalized*r+center_position;
-            if (dist < r) {
-                Handle.transform.position = touch_position;
-            } else {
-                Handle.transform.position = max_position;
-            }
+            Handle.transform.position = GetDirection()*GetMagnitude()+center_position;
         }
     }
     public Vector3 GetDirection() {
