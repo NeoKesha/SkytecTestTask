@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -96,7 +96,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 693bcbe7cc2dde345bc3129a9baa19ef,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -148,13 +149,13 @@ Light:
   serializedVersion: 9
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 4
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -187,7 +188,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -240,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 826e7d9fc2192a04cb2d3c4d52a4c39c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelMap: {fileID: 4900000, guid: d2678248a0214af49a99f1aca8749c9c, type: 3}
+  LevelMap: {fileID: 4900000, guid: 6582a25ebb87a4446b4cfc15c40c249b, type: 3}
   W_Block: {fileID: 5772276374031270988, guid: e5f7ef237672d6847b4cbe7edff7bdb3, type: 3}
   F_Block: {fileID: 3488711992094343015, guid: 2e69983adc3145d42b7430851379d7aa, type: 3}
   L_Block: {fileID: 6689876987447074748, guid: 5fd7ba3ac018836489c4c8ed035ed5a8, type: 3}
