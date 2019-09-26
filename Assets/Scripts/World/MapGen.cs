@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Networking;
 public class MapGen : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -13,7 +13,6 @@ public class MapGen : MonoBehaviour
 
     public GameObject Player;
 
-    private List<Vector3> SpawnPoints;
     void Start() {
         string[] lines = LevelMap.text.Replace("\r\n", "\n").Split('\n');
         int width = 0;
@@ -26,7 +25,7 @@ public class MapGen : MonoBehaviour
         float shift_z = -height * stride / 2.0f;
         int x = 0;
         int z = 0;
-        SpawnPoints = new List<Vector3>();
+        GlobalContext.SpawnPoints.Clear();
         foreach (var l in lines) {
             foreach (var c in l) {
                 GameObject sel = null;
@@ -36,7 +35,7 @@ public class MapGen : MonoBehaviour
                         break;
                     case 'F':
                         sel = F_Block;
-                        SpawnPoints.Add(new Vector3(shift_x + x * stride, 0, shift_z + z * stride));
+                        GlobalContext.SpawnPoints.Add(new Vector3(shift_x + x * stride, 0, shift_z + z * stride));
                         break;
                     case 'L':
                         sel = L_Block;
@@ -46,13 +45,15 @@ public class MapGen : MonoBehaviour
                         break;
                 }
                 if (sel) {
-                    Instantiate(sel, new Vector3(shift_x + x * stride, 0, shift_z + z * stride), new Quaternion());
+                    Instantiate(sel, new Vector3(shift_x + x * stride, 0, shift_z + z * stride), new Quaternion(),gameObject.transform);
                 }
                 ++x;
             }
             x = 0;
             ++z;
         }
-        Instantiate(Player, SpawnPoints[Random.Range(0, SpawnPoints.Count)], new Quaternion());
+        if (GlobalContext.isServer) {
+            //NetworkServer.Spawn(Instantiate(Player, GlobalContext.SpawnPoints[Random.Range(0, GlobalContext.SpawnPoints.Count)], new Quaternion()));
+        }
     }
 }

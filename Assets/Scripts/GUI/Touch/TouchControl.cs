@@ -35,7 +35,7 @@ public class TouchControl : MonoBehaviour
     void Update() {
         Vector3 center_position = Center.transform.position;
         Vector3 touch_position = center_position;
-#if UNITY_EDITOR_WIN 
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
         touch_position = Input.mousePosition;
         held = Input.GetMouseButton(0);
         pressed = Input.GetMouseButtonDown(0);
