@@ -20,7 +20,6 @@ public class TouchControl : MonoBehaviour
     void HandleReleased() {
         Captured = false;
         held = false;
-        Clear();
     }
     // Update is called once per frame
     bool held = false;
@@ -97,9 +96,11 @@ public class TouchControl : MonoBehaviour
                 }
                 if (!preserevd_touch) {
                     Clear();
+                    released = true;
                 }
             } else {
                 Clear();
+                released = true;
             }
         }
 #endif
@@ -109,6 +110,9 @@ public class TouchControl : MonoBehaviour
             HandlePressed();
         }
         if (released) {
+            if (!held) {
+                Clear();
+            }
             HandleReleased();
         }
         if (held) {

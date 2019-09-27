@@ -11,6 +11,7 @@ public class PlayerController : NetworkBehaviour
     public GameObject Barrel;
     public TouchControl MovementTouch;
     public TouchControl ShootingTouch;
+    public Animator Animator;
     public float CharacterSpeed = 5.0f;
     void Start()
     {
@@ -37,6 +38,22 @@ public class PlayerController : NetworkBehaviour
             aimingDir = ShootingTouch.GetDirection();
             aimingAngle = Vector2.SignedAngle(new Vector2(aimingDir.x, aimingDir.y), Vector2.up);
             Controller.SimpleMove(CharacterSpeed * (new Vector3(movementDir.x, 0, movementDir.y)) * movementMagnitude);
+            bool animator_running = Animator.GetBool("running");
+            bool animator_shooting = Animator.GetBool("shooting");
+            if (movementMagnitude > 0 && !animator_running) {
+                Animator.SetBool("running", true);
+            } else if (animator_running && movementMagnitude == 0) {
+                Animator.SetBool("running", false);
+            }
+            if (!animator_shooting) {
+                if (aimingMagnitude >= 0.8) {
+                    //shoot direction
+                    Animator.SetTrigger("shoot");
+                } else if (ShootingTouch.GetReleased()) {
+                    //shoot aimed
+                    Animator.SetTrigger("shoot");
+                }
+            }
             if (aimingMagnitude == 0.0 && movementMagnitude > 0.0) {
                 VisibleBody.transform.rotation = Quaternion.AngleAxis(movementAngle, Vector3.up);
             } else if (aimingMagnitude > 0.0) {
