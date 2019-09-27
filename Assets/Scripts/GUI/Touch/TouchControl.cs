@@ -57,6 +57,7 @@ public class TouchControl : MonoBehaviour
         direction = Vector3.zero;
         my_finger_id = -1;
     }
+    //TODO: make this better maybe?
     void Update() {
         Vector3 center_position = Center.transform.position;
         Vector3 touch_position = center_position;
@@ -85,7 +86,7 @@ public class TouchControl : MonoBehaviour
             if (Input.touchCount > 0) {
                 bool preserevd_touch = false;
                 foreach (var t in Input.touches) {
-                    if (t.fingerId == my_finger_id) {
+                    if (t.fingerId == my_finger_id && t.phase != TouchPhase.Ended) {
                         Vector3 touch_pos = new Vector3(t.position.x, t.position.y, 0);
                         MapTouchPhase(t.phase);
                         magnitude = (touch_pos - center_position).magnitude;
@@ -96,15 +97,16 @@ public class TouchControl : MonoBehaviour
                 }
                 if (!preserevd_touch) {
                     Clear();
+                    held = true;
                     released = true;
                 }
             } else {
                 Clear();
+                held = true;
                 released = true;
             }
         }
 #endif
-
         float dist = (center_position - touch_position).magnitude;
         if (pressed && dist < r) {
             HandlePressed();

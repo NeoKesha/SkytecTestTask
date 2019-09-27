@@ -56,7 +56,7 @@ public class PlayerController : NetworkBehaviour
             }
             if (aimingMagnitude == 0.0 && movementMagnitude > 0.0) {
                 VisibleBody.transform.rotation = Quaternion.AngleAxis(movementAngle, Vector3.up);
-            } else if (aimingMagnitude > 0.0) {
+            } else if (aimingMagnitude > 0.3) {
                 VisibleBody.transform.rotation = Quaternion.AngleAxis(aimingAngle, Vector3.up);
             }
         }
