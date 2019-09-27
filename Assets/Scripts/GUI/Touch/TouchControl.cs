@@ -20,7 +20,6 @@ public class TouchControl : MonoBehaviour
     void HandleReleased() {
         Captured = false;
         held = false;
-        Handle.transform.position = Center.transform.position;
         Clear();
     }
     // Update is called once per frame
@@ -117,14 +116,16 @@ public class TouchControl : MonoBehaviour
             direction = (touch_position - center_position).normalized;
         }
         if (Captured) {
-            Handle.transform.position = GetDirection()*GetMagnitude()+center_position;
+            Handle.transform.position = GetDirection() * GetMagnitude() * r + center_position;
+        } else {
+            Handle.transform.position = center_position;
         }
     }
     public Vector3 GetDirection() {
         return direction;
     }
     public float GetMagnitude() {
-        return magnitude;
+        return magnitude / r;
     }
     public bool GetReleased() {
         return released;

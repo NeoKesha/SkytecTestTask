@@ -20,12 +20,28 @@ public class PlayerController : NetworkBehaviour
     }
 
     // Update is called once per frame
+    private float movementAngle;
+    private float movementMagnitude;
+    private Vector3 movementDir;
+    private float aimingAngle;
+    private float aimingMagnitude;
+    private Vector3 aimingDir;
+
     void Update()
     {
         if (isLocalPlayer) {
-            float moveMag = MovementTouch.GetMagnitude() / 128;
-            Vector3 moveDir = MovementTouch.GetDirection();
-            Controller.SimpleMove(CharacterSpeed * (new Vector3(moveDir.x, 0, moveDir.y)) * moveMag);
+            movementMagnitude = MovementTouch.GetMagnitude();
+            movementDir = MovementTouch.GetDirection();
+            movementAngle = Vector2.SignedAngle(new Vector2(movementDir.x, movementDir.y), Vector2.up);
+            aimingMagnitude = ShootingTouch.GetMagnitude();
+            aimingDir = ShootingTouch.GetDirection();
+            aimingAngle = Vector2.SignedAngle(new Vector2(aimingDir.x, aimingDir.y), Vector2.up);
+            Controller.SimpleMove(CharacterSpeed * (new Vector3(movementDir.x, 0, movementDir.y)) * movementMagnitude);
+            if (aimingMagnitude == 0.0 && movementMagnitude > 0.0) {
+                VisibleBody.transform.rotation = Quaternion.AngleAxis(movementAngle, Vector3.up);
+            } else if (aimingMagnitude > 0.0) {
+                VisibleBody.transform.rotation = Quaternion.AngleAxis(aimingAngle, Vector3.up);
+            }
         }
     }
 }
