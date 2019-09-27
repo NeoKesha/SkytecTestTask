@@ -7,6 +7,8 @@ public class PlayerController : NetworkBehaviour
     // Start is called before the first frame update
     public CharacterController Controller;
     public GameObject Camera;
+    public GameObject VisibleBody;
+    public GameObject Barrel;
     public TouchControl MovementTouch;
     public TouchControl ShootingTouch;
     public float CharacterSpeed = 5.0f;

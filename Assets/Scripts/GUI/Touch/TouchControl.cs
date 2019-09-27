@@ -14,13 +14,14 @@ public class TouchControl : MonoBehaviour
     }
     void HandlePressed() {
         Captured = true;
-        held = false;
+        held = true;
         pressed = false;
     }
     void HandleReleased() {
         Captured = false;
+        held = false;
         Handle.transform.position = Center.transform.position;
-        my_finger_id = -1;
+        Clear();
     }
     // Update is called once per frame
     bool held = false;
@@ -63,7 +64,6 @@ public class TouchControl : MonoBehaviour
         Vector3 touch_position = center_position;
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
         touch_position = Input.mousePosition;
-        held = Input.GetMouseButton(0);
         pressed = Input.GetMouseButtonDown(0);
         released = Input.GetMouseButtonUp(0);
 #elif UNITY_ANDROID
@@ -111,7 +111,6 @@ public class TouchControl : MonoBehaviour
         }
         if (released) {
             HandleReleased();
-            magnitude = 0;
         }
         if (held) {
             magnitude = Mathf.Min(r,dist);
