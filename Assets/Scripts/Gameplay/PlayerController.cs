@@ -9,10 +9,24 @@ public class PlayerController : NetworkBehaviour
     public GameObject Camera;
     public GameObject VisibleBody;
     public GameObject Barrel;
+    public GameObject Bullet;
     public TouchControl MovementTouch;
     public TouchControl ShootingTouch;
     public Animator Animator;
+
     public float CharacterSpeed = 5.0f;
+    public float MaxHP = 100.0f;
+    public float Damage = 20.0f;
+    public int Pellets = 7;
+
+    private float movementAngle;
+    private float movementMagnitude;
+    private Vector3 movementDir;
+    private float aimingAngle;
+    private float aimingMagnitude;
+    private Vector3 aimingDir;
+    
+
     void Start()
     {
         if (isLocalPlayer) {
@@ -21,12 +35,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     // Update is called once per frame
-    private float movementAngle;
-    private float movementMagnitude;
-    private Vector3 movementDir;
-    private float aimingAngle;
-    private float aimingMagnitude;
-    private Vector3 aimingDir;
+    
 
     void Update()
     {
@@ -47,7 +56,7 @@ public class PlayerController : NetworkBehaviour
             }
             if (!animator_shooting) {
                 if (aimingMagnitude >= 0.8) {
-                    //shoot direction
+                    Shoot();
                     Animator.SetTrigger("shoot");
                 } else if (ShootingTouch.GetReleased()) {
                     //shoot aimed
@@ -59,6 +68,13 @@ public class PlayerController : NetworkBehaviour
             } else if (aimingMagnitude > 0.3) {
                 VisibleBody.transform.rotation = Quaternion.AngleAxis(aimingAngle, Vector3.up);
             }
+        }
+    }
+    private void Shoot() {
+        for (int i = 0; i < Pellets; ++i) {
+            var go = Instantiate(Bullet, Barrel.transform.position, Quaternion.Euler(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
+            go.GetComponent<CoffeeShred>().Init(new Vector3(aimingDir.x, 0, aimingDir.y), Damage, this.gameObject);
+            NetworkServer.Spawn(go);
         }
     }
 }

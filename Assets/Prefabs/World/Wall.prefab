@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3206971237242180731}
   m_Layer: 0
   m_Name: Wall
-  m_TagString: Untagged
+  m_TagString: Impassable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

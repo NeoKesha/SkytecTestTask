@@ -525,10 +525,13 @@ MonoBehaviour:
   Camera: {fileID: 497902485}
   VisibleBody: {fileID: 357996744923392536}
   Barrel: {fileID: 142741391715222640}
+  Bullet: {fileID: 4805434848137812846, guid: 52808f91642086a438710bd1c046c4bc, type: 3}
   MovementTouch: {fileID: 3490459312727007211}
   ShootingTouch: {fileID: 2465861122336550712}
   Animator: {fileID: 6640142300551181681}
   CharacterSpeed: 5
+  MaxHP: 100
+  Damage: 20
 --- !u!114 &-2533188295833293830
 MonoBehaviour:
   m_ObjectHideFlags: 0

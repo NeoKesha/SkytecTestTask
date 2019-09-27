@@ -112,9 +112,7 @@ public class TouchControl : MonoBehaviour
             HandlePressed();
         }
         if (released) {
-            if (!held) {
-                Clear();
-            }
+            Clear();
             HandleReleased();
         }
         if (held) {
