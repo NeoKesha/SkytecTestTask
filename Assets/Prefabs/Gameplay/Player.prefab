@@ -776,11 +776,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PLAYER_T_POSE
       objectReference: {fileID: 0}
-    - target: {fileID: -6057140222963153312, guid: 6436074f5c361cb478a567e6935efcb1,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 0ea5d336e88d95f4d94efab613461577, type: 2}
     - target: {fileID: -4216859302048453862, guid: 6436074f5c361cb478a567e6935efcb1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -789,7 +784,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 6436074f5c361cb478a567e6935efcb1,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 6436074f5c361cb478a567e6935efcb1,
         type: 3}
@@ -836,6 +831,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6057140222963153312, guid: 6436074f5c361cb478a567e6935efcb1,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 8799da9172147bd41bc127c18d9ec14d, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6436074f5c361cb478a567e6935efcb1, type: 3}
 --- !u!4 &3651440716954032139 stripped

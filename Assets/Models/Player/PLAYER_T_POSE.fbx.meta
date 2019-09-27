@@ -4,6 +4,9 @@ ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
+      74: 7052213787383727082
+    second: chara_c.qc_skeleton|chara_c.qc_skeletonAction
+  - first:
       74: -6629415940202731569
     second: chara_c.qc_skeleton|chara_c.qc_skeletonAction.001
   externalObjects: {}
