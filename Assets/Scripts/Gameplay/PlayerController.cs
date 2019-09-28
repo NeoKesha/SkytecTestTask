@@ -10,6 +10,7 @@ public class PlayerController : NetworkBehaviour
     public GameObject VisibleBody;
     public GameObject Barrel;
     public GameObject Bullet;
+    public GameObject LocalIndicator;
     public TouchControl MovementTouch;
     public TouchControl ShootingTouch;
     public Animator Animator;
@@ -31,6 +32,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (isLocalPlayer) {
             Camera.SetActive(true);
+            LocalIndicator.SetActive(true);
         }
     }
 
