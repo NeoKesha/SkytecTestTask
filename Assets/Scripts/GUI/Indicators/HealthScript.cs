@@ -26,7 +26,7 @@ public class HealthScript : MonoBehaviour
         transform.localScale = Beats[i]*(1.0f-t) + Beats[(i + 1) % BeatsCnt]*t;
         T += Time.deltaTime * GetMultiplier();
 
-        HPLabel.text = Mathf.FloorToInt(TiedPlayer.GetHealth()).ToString();
+        HPLabel.text = Mathf.CeilToInt(TiedPlayer.GetHealth()).ToString();
     }
 
     private float GetMultiplier() {
