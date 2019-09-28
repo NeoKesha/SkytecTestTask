@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-public class PlayerController : NetworkBehaviour
-{
+public class PlayerController : NetworkBehaviour {
     // Start is called before the first frame update
     public CharacterController Controller;
     public GameObject Camera;
@@ -18,7 +17,7 @@ public class PlayerController : NetworkBehaviour
     public float CharacterSpeed = 5.0f;
     public float MaxHP = 100.0f;
     public float Damage = 20.0f;
-    public int Pellets = 7;
+    public int Pellets = 1;
 
     private float movementAngle;
     private float movementMagnitude;
@@ -26,21 +25,21 @@ public class PlayerController : NetworkBehaviour
     private float aimingAngle;
     private float aimingMagnitude;
     private Vector3 aimingDir;
-    
 
-    void Start()
-    {
+
+    void Start() {
         if (isLocalPlayer) {
             Camera.SetActive(true);
             LocalIndicator.SetActive(true);
         }
+         // Ingnore collisions between bullets
+         Physics.IgnoreLayerCollision(9, 9);
     }
 
     // Update is called once per frame
-    
 
-    void Update()
-    {
+
+    void Update() {
         if (isLocalPlayer) {
             movementMagnitude = MovementTouch.GetMagnitude();
             movementDir = MovementTouch.GetDirection();
@@ -58,7 +57,7 @@ public class PlayerController : NetworkBehaviour
             }
             if (!animator_shooting) {
                 if (aimingMagnitude >= 0.8) {
-                    Shoot();
+                    CmdShoot(new Vector3(aimingDir.x, 0, aimingDir.y));
                     Animator.SetTrigger("shoot");
                 } else if (ShootingTouch.GetReleased()) {
                     //shoot aimed
@@ -72,10 +71,11 @@ public class PlayerController : NetworkBehaviour
             }
         }
     }
-    private void Shoot() {
+    [Command]
+    private void CmdShoot(Vector3 dir) {
         for (int i = 0; i < Pellets; ++i) {
             var go = Instantiate(Bullet, Barrel.transform.position, Quaternion.Euler(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
-            go.GetComponent<CoffeeShred>().Init(new Vector3(aimingDir.x, 0, aimingDir.y), Damage, this.gameObject);
+            go.GetComponent<CoffeeShred>().Init(dir, Damage, this.gameObject);
             NetworkServer.Spawn(go);
         }
     }

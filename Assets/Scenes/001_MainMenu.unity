@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 112000000, guid: d6207689f66646048ab3f82dd0bb8430,
     type: 2}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -713,7 +713,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: 127.0.0.1
 --- !u!222 &143658178
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1658,7 +1658,6 @@ MonoBehaviour:
   m_OnlineScene: 002_BattleArena
   m_SpawnPrefabs:
   - {fileID: 4805434848137812846, guid: 52808f91642086a438710bd1c046c4bc, type: 3}
-  - {fileID: 0}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
