@@ -104,16 +104,22 @@ public class PlayerController : NetworkBehaviour {
         } else if (Dead && HP > 0.0f) {
             Animator.SetTrigger("respawn");
             Dead = false;
+            fragged = false;
             respawning = false;
         }
-    }        
+    }
 
+    private bool fragged = false;
     public void TakeDamage(float Damage, PlayerController attacker) {
         if (!Dead && isServer) {
             HP -= Damage;
             if (HP <= 0.0f) {
                 HP = 0.0f;
-                attacker.AddFrag();
+                if (!fragged) {
+                    attacker.AddFrag();
+                    fragged = true;
+                }
+                
             }
         }
     }
