@@ -52,8 +52,5 @@ public class MapGen : MonoBehaviour
             x = 0;
             ++z;
         }
-        if (GlobalContext.isServer) {
-            //NetworkServer.Spawn(Instantiate(Player, GlobalContext.SpawnPoints[Random.Range(0, GlobalContext.SpawnPoints.Count)], new Quaternion()));
-        }
     }
 }

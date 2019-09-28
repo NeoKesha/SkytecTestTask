@@ -13,7 +13,7 @@ public class MyNetworkManager : NetworkManager
         //int a = 0;
     }
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
-        GameObject player = (GameObject)Instantiate(playerPrefab, GlobalContext.SpawnPoints[Random.Range(0,GlobalContext.SpawnPoints.Count)], Quaternion.identity);
+        GameObject player = (GameObject)Instantiate(playerPrefab, GlobalContext.GetSpawnPoint(), Quaternion.identity);
         NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
     }
     // Start is called before the first frame update

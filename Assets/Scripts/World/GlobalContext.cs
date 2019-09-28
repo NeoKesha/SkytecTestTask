@@ -6,4 +6,17 @@ public static class GlobalContext
 {
     public static List<Vector3> SpawnPoints = new List<Vector3>();
     public static bool isServer = false;
+
+    public static Vector3 GetSpawnPoint() {
+        Vector3 shift = new Vector3(0, 1.5f, 0);
+        int i = Random.Range(0, SpawnPoints.Count);
+        int j = SpawnPoints.Count;
+        Vector3 spawn = SpawnPoints[i];
+        while (Physics.OverlapSphere(spawn + shift, 0.75f).Length > 0 && j > 0) {            
+            i = (i + 1) % SpawnPoints.Count;
+            spawn = SpawnPoints[i];
+            --j; // If ALL cells are not free, we could go into infinite cycle.
+        }
+        return spawn;
+    }
 }

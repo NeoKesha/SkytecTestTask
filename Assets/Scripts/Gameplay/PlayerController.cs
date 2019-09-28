@@ -141,7 +141,8 @@ public class PlayerController : NetworkBehaviour {
     [Command]
     private void CmdRespawn() {
         HP = MaxHP;
-        //Complete here
+        gameObject.transform.position = GlobalContext.GetSpawnPoint(); // Because of this is had to set NetworkTransform to Translation instead of CharacterController Sync!
+        RpcSyncYourCharacterSpawn(gameObject.transform.position);
     }
 
     [Command]
@@ -151,6 +152,11 @@ public class PlayerController : NetworkBehaviour {
             go.GetComponent<CoffeeShred>().Init(dir, Damage / Pellets, this.gameObject);
             NetworkServer.Spawn(go);
         }
+    }
+
+    [ClientRpc]
+    private void RpcSyncYourCharacterSpawn(Vector3 pos) {
+        gameObject.transform.position = pos;
     }
 
     public int GetFrags() { return Frags; }
