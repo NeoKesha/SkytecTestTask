@@ -20,6 +20,10 @@ public class PlayerController : NetworkBehaviour {
     public float CharacterSpeed = 5.0f;
     public float MaxHP = 100.0f;
     public float Damage = 20.0f;
+
+    public float SpeedMultiplyStart = 1.0f;
+    public float SpeedMultiplyEnd = 2.0f;
+
     public int RespawnTime = 3;
     public int Pellets = 8;
 
@@ -64,6 +68,9 @@ public class PlayerController : NetworkBehaviour {
 
     public void FixedUpdate() {
         if (isLocalPlayer) {
+            float t = HP / MaxHP;
+            if (t == 0.0f) t = 1.0f;
+            float k = SpeedMultiplyStart * t + SpeedMultiplyEnd * (1.0f - t);
             if (!Dead) {
                 movementMagnitude = MovementTouch.GetMagnitude();
                 movementDir = MovementTouch.GetDirection();
@@ -71,9 +78,10 @@ public class PlayerController : NetworkBehaviour {
                 aimingMagnitude = ShootingTouch.GetMagnitude();
                 aimingDir = ShootingTouch.GetDirection();
                 aimingAngle = Vector2.SignedAngle(new Vector2(aimingDir.x, aimingDir.y), Vector2.up);
-                Controller.SimpleMove(CharacterSpeed * (new Vector3(movementDir.x, 0, movementDir.y)) * movementMagnitude);
+                Controller.SimpleMove(CharacterSpeed * (new Vector3(movementDir.x, 0, movementDir.y)) * movementMagnitude*k);
                 bool animator_running = Animator.GetBool("running");
                 bool animator_shooting = Animator.GetBool("shooting");
+                Animator.SetFloat("speed", k);
                 if (movementMagnitude > 0 && !animator_running) {
                     Animator.SetBool("running", true);
                 } else if (animator_running && movementMagnitude == 0) {
