@@ -6,6 +6,7 @@ public class PlayerController : NetworkBehaviour {
     // Start is called before the first frame update
     public CharacterController Controller;
     public GameObject Camera;
+    public GameObject GUI;
     public GameObject VisibleBody;
     public GameObject Barrel;
     public GameObject Bullet;
@@ -17,7 +18,7 @@ public class PlayerController : NetworkBehaviour {
     public float CharacterSpeed = 5.0f;
     public float MaxHP = 100.0f;
     public float Damage = 20.0f;
-    public int Pellets = 1;
+    public int Pellets = 7;
 
     private float movementAngle;
     private float movementMagnitude;
@@ -26,21 +27,60 @@ public class PlayerController : NetworkBehaviour {
     private float aimingMagnitude;
     private Vector3 aimingDir;
 
+    [SyncVar]
+    private float HP;
+    [SyncVar]
+    private bool Dead;
+    [SyncVar]
+    private int Frags;
 
     void Start() {
         if (isLocalPlayer) {
             Camera.SetActive(true);
             LocalIndicator.SetActive(true);
+            GUI.SetActive(true);
+        }
+        if (isServer) {
+            HP = MaxHP;
+            Frags = 0;
+            Dead = false;
         }
          // Ingnore collisions between bullets
          Physics.IgnoreLayerCollision(9, 9);
     }
 
+    public void TakeDamage(float Damage, PlayerController attacker) {
+        if (isServer && !Dead) {
+            HP -= Damage;
+            if (HP <= 0.0f) {
+                HP = 0.0f;
+                Dead = true; // Pretty much dead!
+                attacker.AddFrag();
+            }
+        }
+    }
+
+    public void AddFrag() {
+        if (isServer) {
+            ++Frags;
+        }
+    }
+
+    public int GetFrags() {
+        return Frags;
+    }
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.CompareTag("Projectile") && isServer) {
+            CoffeeShred shred = collision.gameObject.GetComponent<CoffeeShred>();
+            TakeDamage(shred.GetDamage(), shred.GetParent().GetComponent<PlayerController>());
+            Destroy(collision.gameObject);
+        }
+    }
     // Update is called once per frame
 
 
     void Update() {
-        if (isLocalPlayer) {
+        if (isLocalPlayer && !Dead) {
             movementMagnitude = MovementTouch.GetMagnitude();
             movementDir = MovementTouch.GetDirection();
             movementAngle = Vector2.SignedAngle(new Vector2(movementDir.x, movementDir.y), Vector2.up);
@@ -75,8 +115,12 @@ public class PlayerController : NetworkBehaviour {
     private void CmdShoot(Vector3 dir) {
         for (int i = 0; i < Pellets; ++i) {
             var go = Instantiate(Bullet, Barrel.transform.position, Quaternion.Euler(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
-            go.GetComponent<CoffeeShred>().Init(dir, Damage, this.gameObject);
+            go.GetComponent<CoffeeShred>().Init(dir, Damage/Pellets, this.gameObject);
             NetworkServer.Spawn(go);
         }
+    }
+
+    public float GetHealth() {
+        return HP;
     }
 }

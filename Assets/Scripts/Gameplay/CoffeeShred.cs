@@ -33,4 +33,12 @@ public class CoffeeShred : NetworkBehaviour
             Destroy(this.gameObject);
         }
     }
+
+    public float GetDamage() {
+        return Damage;
+    }
+
+    public GameObject GetParent() {
+        return Parent;
+    }
 }
