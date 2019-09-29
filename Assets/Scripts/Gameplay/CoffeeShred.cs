@@ -7,6 +7,9 @@ public class CoffeeShred : NetworkBehaviour
 {
     public float DirectionSpread = 7.5f;
     public float SpeedSpread = 0.4f;
+    public float MinScale = 0.8f;
+    public float MaxScale = 1.6f;
+    public GameObject Visual;
     
     bool initialized = false;
     Vector3 Direction = new Vector3(1,0,0);
@@ -14,6 +17,11 @@ public class CoffeeShred : NetworkBehaviour
     float Damage = 0.0f;
     float Speed = 15.0f;
     float TTL = 15.0f;
+    private void Start() {
+        float s = Random.Range(MinScale, MaxScale);
+        Visual.transform.localScale = new Vector3(s,s,s);
+        Visual.transform.rotation = Quaternion.Euler(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f));
+    }
     public void Init(Vector3 direction, float damage, GameObject parent) {
         if (!initialized) {
             Direction = Quaternion.AngleAxis(Random.Range(-DirectionSpread, DirectionSpread),Vector3.up)*direction;
