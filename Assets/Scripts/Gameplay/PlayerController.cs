@@ -23,6 +23,8 @@ public class PlayerController : NetworkBehaviour {
 
     public float SpeedMultiplyStart = 1.0f;
     public float SpeedMultiplyEnd = 2.0f;
+    public float CoverVisibilityStart = 4.0f; // Distance minimum to see emeny on the edge of cover
+    public float CoverVisibilityEnd = 2.0f; // Distance minimum to see emeny at center of cover
 
     public int RespawnTime = 3;
     public int Pellets = 8;
@@ -35,17 +37,17 @@ public class PlayerController : NetworkBehaviour {
     private Vector3 aimingDir;
     private bool respawning;
     private bool Dead;
+    private GameObject BeansCover;
 
     [SyncVar] private float HP;
     [SyncVar] private int Frags;
 
-    void Start() {
-        //REFACTOR
-        Physics.IgnoreLayerCollision(9, 9);
-        //REFACTOR
+    public void Start() {
+        BeansCover = null;
     }
 
     public override void OnStartLocalPlayer() {
+        GlobalContext.LocalAuthority = this.gameObject;
         Camera.SetActive(true);
         LocalIndicator.SetActive(true);
         GUI.SetActive(true);
@@ -65,7 +67,40 @@ public class PlayerController : NetworkBehaviour {
             Destroy(collision.gameObject);
         }
     }
-
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("Cover")) {
+            BeansCover = other.gameObject;
+        }
+    }
+    private void OnTriggerExit(Collider other) {
+        if (other.CompareTag("Cover")) {
+            BeansCover = null;
+        }
+    }
+    public void Update() {
+        if (BeansCover) {
+            var b_dist = (BeansCover.transform.position - transform.position).magnitude;
+            var p_dist = (GlobalContext.LocalAuthority.transform.position - transform.position).magnitude;
+            var t = b_dist / 1.5f; //Half of width of bush + radius of player
+            var m_dist = CoverVisibilityStart * t + CoverVisibilityEnd * (1.0f - t);
+            if (p_dist > m_dist) {
+                VisibleBody.SetActive(false);
+            } else {
+                VisibleBody.SetActive(true);
+            }
+        } else if (!VisibleBody.activeSelf) {
+            VisibleBody.SetActive(true);
+        }
+        if (!Dead && HP <= 0.0f) {
+            Animator.SetTrigger("die");
+            Dead = true;
+        } else if (Dead && HP > 0.0f) {
+            Animator.SetTrigger("respawn");
+            Dead = false;
+            fragged = false;
+            respawning = false;
+        }
+    }
     public void FixedUpdate() {
         if (isLocalPlayer) {
             float t = HP / MaxHP;
@@ -105,15 +140,6 @@ public class PlayerController : NetworkBehaviour {
                 respawning = true;
                 StartCoroutine(WaitForRespawn());
             }
-        }
-        if (!Dead && HP <= 0.0f) {
-            Animator.SetTrigger("die");
-            Dead = true;
-        } else if (Dead && HP > 0.0f) {
-            Animator.SetTrigger("respawn");
-            Dead = false;
-            fragged = false;
-            respawning = false;
         }
     }
 

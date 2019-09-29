@@ -6,7 +6,13 @@ public static class GlobalContext
 {
     public static List<Vector3> SpawnPoints = new List<Vector3>();
     public static bool isServer = false;
+    public static GameObject LocalAuthority;
 
+    static GlobalContext() {
+        Screen.SetResolution(992, 537, false);
+        Application.targetFrameRate = 60;
+        Physics.IgnoreLayerCollision(9, 9);
+    }
     public static Vector3 GetSpawnPoint() {
         Vector3 shift = new Vector3(0, 1.5f, 0);
         int i = Random.Range(0, SpawnPoints.Count);
