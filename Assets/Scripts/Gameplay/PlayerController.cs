@@ -150,7 +150,7 @@ public class PlayerController : NetworkBehaviour {
     private void CmdRespawn() {
         HP = MaxHP;
         gameObject.transform.position = GlobalContext.GetSpawnPoint(); // Because of this is had to set NetworkTransform to Translation instead of CharacterController Sync!
-        RpcSyncYourCharacterSpawn(gameObject.transform.position);
+        RpcSyncYourCharacterSpawn(gameObject.transform.position);      // I tried everything.
     }
 
     [Command]
