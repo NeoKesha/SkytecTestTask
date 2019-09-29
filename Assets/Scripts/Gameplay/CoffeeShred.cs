@@ -10,7 +10,9 @@ public class CoffeeShred : NetworkBehaviour
     public float MinScale = 0.8f;
     public float MaxScale = 1.6f;
     public GameObject Visual;
-    
+    public GameObject ShotFX;
+    public Sprite Hit;
+
     bool initialized = false;
     Vector3 Direction = new Vector3(1,0,0);
     GameObject Parent = null;
@@ -36,8 +38,22 @@ public class CoffeeShred : NetworkBehaviour
         }
     }
 
+
+    private bool hit = false;
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.CompareTag("Impassable")) {
+            if (!hit) {
+                var fx = Instantiate(ShotFX, collision.GetContact(0).point, collision.transform.rotation, collision.transform);
+                var normal = collision.GetContact(0).normal;
+                var x = Vector3.Angle(normal, Vector3.right) + 90;
+                var y = Vector3.Angle(normal, Vector3.up);
+                var z = Vector3.Angle(normal, Vector3.back);
+                var s = Random.Range(1.5f, 3.0f);
+                fx.transform.localScale = new Vector3(s, s, s);
+                fx.transform.localRotation = Quaternion.Euler(x, y, z);
+                fx.GetComponent<ShotFX>().Setup(Hit, Color.black, 0.15f);
+                hit = true;
+            }
             Destroy(this.gameObject);
         }
     }

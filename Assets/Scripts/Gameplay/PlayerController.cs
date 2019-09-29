@@ -10,6 +10,9 @@ public class PlayerController : NetworkBehaviour {
     public GameObject VisibleBody;
     public GameObject Barrel;
     public GameObject Bullet;
+    public GameObject ShotFX;
+    public Sprite BlodstainSprite;
+    public Sprite GunshotSprite;
     public GameObject LocalIndicator;
     public GameObject DeathScreen;
     public Countdown Countdown;
@@ -63,10 +66,21 @@ public class PlayerController : NetworkBehaviour {
     }
 
     private void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.CompareTag("Projectile") && isServer) {
-            CoffeeShred shred = collision.gameObject.GetComponent<CoffeeShred>();
-            TakeDamage(shred.GetDamage(), shred.GetParent().GetComponent<PlayerController>());
-            Destroy(collision.gameObject);
+        if (collision.gameObject.CompareTag("Projectile")) {
+            if (isServer) { 
+                CoffeeShred shred = collision.gameObject.GetComponent<CoffeeShred>();
+                TakeDamage(shred.GetDamage(), shred.GetParent().GetComponent<PlayerController>());
+                Destroy(collision.gameObject);
+            }
+            var fx = Instantiate(ShotFX, collision.GetContact(0).point, transform.rotation, transform);
+            var normal = collision.GetContact(0).normal;
+            var x = Vector3.Angle(normal, Vector3.right) + 90;
+            var y = Vector3.Angle(normal, Vector3.down);
+            var z = Vector3.Angle(normal, Vector3.back);
+            var s = Random.Range(1.0f, 2.0f);
+            fx.transform.localScale = new Vector3(s, s, s);
+            fx.transform.localRotation = Quaternion.Euler(x, y, z);
+            fx.GetComponent<ShotFX>().Setup(BlodstainSprite, Color.red, 0.25f);
         }
     }
     private void OnTriggerEnter(Collider other) {
@@ -219,6 +233,9 @@ public class PlayerController : NetworkBehaviour {
     [ClientRpc]
     private void RpcPlayGunshot() {
         Gunshot.Play();
+        var fx = Instantiate(ShotFX, Barrel.transform.position, Barrel.transform.rotation , Barrel.transform);
+        fx.transform.localRotation = Quaternion.Euler(0, 0, 90);
+        fx.GetComponent<ShotFX>().Setup(GunshotSprite, Color.white, 0.25f);
     }
 
     public int GetFrags() { return Frags; }
