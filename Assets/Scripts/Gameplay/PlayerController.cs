@@ -16,6 +16,7 @@ public class PlayerController : NetworkBehaviour {
     public TouchControl MovementTouch;
     public TouchControl ShootingTouch;
     public Animator Animator;
+    public AudioSource Gunshot;
 
     public float CharacterSpeed = 5.0f;
     public float MaxHP = 100.0f;
@@ -208,11 +209,16 @@ public class PlayerController : NetworkBehaviour {
             go.GetComponent<CoffeeShred>().Init(dir, Damage / Pellets, this.gameObject);
             NetworkServer.Spawn(go);
         }
+        RpcPlayGunshot();
     }
 
     [ClientRpc]
     private void RpcSyncYourCharacterSpawn(Vector3 pos) {
         gameObject.transform.position = pos;
+    }
+    [ClientRpc]
+    private void RpcPlayGunshot() {
+        Gunshot.Play();
     }
 
     public int GetFrags() { return Frags; }
