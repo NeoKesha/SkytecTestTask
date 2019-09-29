@@ -44,6 +44,7 @@ public class PlayerController : NetworkBehaviour {
 
     public void Start() {
         BeansCover = null;
+        movementDir = Vector3.up;
     }
 
     public override void OnStartLocalPlayer() {
@@ -77,7 +78,7 @@ public class PlayerController : NetworkBehaviour {
             BeansCover = null;
         }
     }
-    public void Update() {
+    public void Update() { // Animations and visuals
         if (BeansCover) {
             var b_dist = (BeansCover.transform.position - transform.position).magnitude;
             var p_dist = (GlobalContext.LocalAuthority.transform.position - transform.position).magnitude;
@@ -101,14 +102,16 @@ public class PlayerController : NetworkBehaviour {
             respawning = false;
         }
     }
-    public void FixedUpdate() {
+    public void FixedUpdate() { // Physics and movement
         if (isLocalPlayer) {
             float t = HP / MaxHP;
             if (t == 0.0f) t = 1.0f;
             float k = SpeedMultiplyStart * t + SpeedMultiplyEnd * (1.0f - t);
             if (!Dead) {
                 movementMagnitude = MovementTouch.GetMagnitude();
-                movementDir = MovementTouch.GetDirection();
+                if (movementMagnitude > 0.0f) {
+                    movementDir = MovementTouch.GetDirection();
+                }
                 movementAngle = Vector2.SignedAngle(new Vector2(movementDir.x, movementDir.y), Vector2.up);
                 aimingMagnitude = ShootingTouch.GetMagnitude();
                 aimingDir = ShootingTouch.GetDirection();
@@ -126,8 +129,27 @@ public class PlayerController : NetworkBehaviour {
                     if (aimingMagnitude >= 0.8) {
                         CmdShoot(new Vector3(aimingDir.x, 0, aimingDir.y));
                         Animator.SetBool("shooting", true);
-                    } else if (ShootingTouch.GetReleased()) {
-                        //shoot aimed
+                    } else if (ShootingTouch.GetReleased() && ShootingTouch.GetCaptured()) {
+                        var colliders = Physics.OverlapSphere(transform.position,8,LayerMask.GetMask("Character"));
+                        var nearest = float.MaxValue;
+                        aimingDir = movementDir;
+                        foreach (var c in colliders) {
+                            var go = c.gameObject;
+                            if (go == gameObject)
+                                continue; // Not me!
+                            var dist = (go.transform.position - transform.position).magnitude;
+                            if (nearest > dist) {
+                                var character = go.GetComponent<PlayerController>();
+                                if (character.GetVisible()) {
+                                    nearest = dist;
+                                    aimingDir = (go.transform.position - transform.position).normalized;
+                                    aimingDir = new Vector3(aimingDir.x, aimingDir.z, 0);
+                                    aimingAngle = Vector2.SignedAngle(new Vector2(aimingDir.x, aimingDir.y), Vector2.up);
+                                    VisibleBody.transform.rotation = Quaternion.AngleAxis(aimingAngle, Vector3.up);
+                                }
+                            }
+                        }
+                        CmdShoot(new Vector3(aimingDir.x, 0, aimingDir.y));
                         Animator.SetBool("shooting", true);
                     }
                 }
@@ -195,4 +217,5 @@ public class PlayerController : NetworkBehaviour {
 
     public int GetFrags() { return Frags; }
     public float GetHealth() { return HP; }
+    public bool GetVisible() { return VisibleBody.activeSelf; }
 }

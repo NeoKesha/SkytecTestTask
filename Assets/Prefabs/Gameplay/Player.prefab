@@ -356,7 +356,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 93, y: 120}
+  m_SizeDelta: {x: 124, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8284799013628261963
 CanvasRenderer:
@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 8296312416293439751}
   - component: {fileID: 5888625536061499892}
   - component: {fileID: 7822240281263521058}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -679,6 +679,8 @@ MonoBehaviour:
   Damage: 20
   SpeedMultiplyStart: 1
   SpeedMultiplyEnd: 2
+  CoverVisibilityStart: 4
+  CoverVisibilityEnd: 2
   RespawnTime: 3
   Pellets: 7
 --- !u!114 &4727179394207812386
