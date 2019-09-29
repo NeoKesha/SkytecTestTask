@@ -1,5 +1,22 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &2290893553878763566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800307634032014817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 335b58250a7807449bfa61e4d3090168, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WaterRenderer: {fileID: 56062231761436989}
+  WaterWaveUAmp: 0.5
+  WaterWaveVAmp: 0
+  PhaseShift: 0
+  Speed: 0.25
 --- !u!1 &6689876987447074748
 GameObject:
   m_ObjectHideFlags: 0
@@ -65,7 +82,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 1f91ff0531b9cba49bda8b1eef8d85c3,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 1f91ff0531b9cba49bda8b1eef8d85c3,
         type: 3}
@@ -115,18 +132,30 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 1f91ff0531b9cba49bda8b1eef8d85c3,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 99.99997
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 1f91ff0531b9cba49bda8b1eef8d85c3,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 49.999985
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f91ff0531b9cba49bda8b1eef8d85c3, type: 3}
+--- !u!1 &1800307634032014817 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 1f91ff0531b9cba49bda8b1eef8d85c3,
+    type: 3}
+  m_PrefabInstance: {fileID: 7771549770936069352}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3359865203225266162 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 1f91ff0531b9cba49bda8b1eef8d85c3,
+    type: 3}
+  m_PrefabInstance: {fileID: 7771549770936069352}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &56062231761436989 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -1504981713932161579, guid: 1f91ff0531b9cba49bda8b1eef8d85c3,
     type: 3}
   m_PrefabInstance: {fileID: 7771549770936069352}
   m_PrefabAsset: {fileID: 0}
