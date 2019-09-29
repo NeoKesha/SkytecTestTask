@@ -7,9 +7,7 @@ public class MainMenuSwitch : MonoBehaviour
     public GameObject From = null;
     public GameObject To = null;
     public void OnClick() {
-        if (To && From) {
-            To.SetActive(true);
-            From.SetActive(false);
-        }
+        if (To) To.SetActive(true);
+        if (From) From.SetActive(false);
     }
 }
