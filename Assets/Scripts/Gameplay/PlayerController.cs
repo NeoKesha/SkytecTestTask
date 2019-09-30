@@ -74,6 +74,7 @@ public class PlayerController : NetworkBehaviour {
             if (isServer) { 
                 CoffeeShred shred = collision.gameObject.GetComponent<CoffeeShred>();
                 TakeDamage(shred.GetDamage(), shred.GetParent().GetComponent<PlayerController>());
+                shred.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 Destroy(collision.gameObject);
             }
             var fx = Instantiate(ShotFX, collision.GetContact(0).point, transform.rotation, transform);
