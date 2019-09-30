@@ -13,9 +13,13 @@ public static class GlobalContext
         Screen.SetResolution(992, 537, false);
         Application.targetFrameRate = 60;
         Physics.IgnoreLayerCollision(9, 9);
+        Physics.IgnoreLayerCollision(9, 11);
+        Physics.IgnoreLayerCollision(10, 11);
+        Physics.IgnoreLayerCollision(11, 11);
+        Physics.IgnoreLayerCollision(12, 11);
         Settings = new Dictionary<string, string>();
         Settings.Add("LANG", "RU");
-        Settings.Add("GORE", "0");
+        Settings.Add("GORE", "1");
         Settings.Add("CHARACTER", "0");
         Settings.Add("NAME", "Player");
     }

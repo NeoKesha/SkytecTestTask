@@ -10,6 +10,7 @@ public class PlayerController : NetworkBehaviour {
     public GameObject VisibleBody;
     public GameObject Barrel;
     public GameObject Bullet;
+    public GameObject Pile;
     public GameObject ShotFX;
     public Sprite BlodstainSprite;
     public Sprite GunshotSprite;
@@ -128,6 +129,7 @@ public class PlayerController : NetworkBehaviour {
         } else {
             if (Hide && VisibleBody.activeSelf) {
                 VisibleBody.SetActive(false);
+                if (GlobalContext.Settings["GORE"] == "1") Instantiate(Pile, transform.position + new Vector3(0,0.8f,0), new Quaternion());
             } else if (!Hide && !VisibleBody.activeSelf) {
                 VisibleBody.SetActive(true);
             }

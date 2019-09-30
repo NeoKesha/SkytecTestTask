@@ -808,6 +808,7 @@ MonoBehaviour:
   VisibleBody: {fileID: 357996744923392536}
   Barrel: {fileID: 142741391715222640}
   Bullet: {fileID: 4805434848137812846, guid: 52808f91642086a438710bd1c046c4bc, type: 3}
+  Pile: {fileID: 783724384092029948, guid: 807fedf5995dee14b8c1e4df419362c0, type: 3}
   ShotFX: {fileID: 6535236155995150304, guid: af8fdde2276642b4999c9e9fd3dce36b, type: 3}
   BlodstainSprite: {fileID: 21300000, guid: e11021d1a5625724cb03994bef5260ff, type: 3}
   GunshotSprite: {fileID: 21300000, guid: 80b7578039a985043bcb9a24dcaca06a, type: 3}
