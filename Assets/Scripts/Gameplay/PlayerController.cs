@@ -74,7 +74,10 @@ public class PlayerController : NetworkBehaviour {
         if (collision.gameObject.CompareTag("Projectile")) {
             if (isServer) { 
                 CoffeeShred shred = collision.gameObject.GetComponent<CoffeeShred>();
-                TakeDamage(shred.GetDamage(), shred.GetParent().GetComponent<PlayerController>());
+                if (!shred.GetDeactivated()) {
+                    TakeDamage(shred.GetDamage(), shred.GetParent().GetComponent<PlayerController>());
+                    shred.Deactivate();
+                }
                 shred.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 Destroy(collision.gameObject);
             }

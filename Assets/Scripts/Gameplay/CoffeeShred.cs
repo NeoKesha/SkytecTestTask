@@ -66,4 +66,12 @@ public class CoffeeShred : NetworkBehaviour
     public GameObject GetParent() {
         return Parent;
     }
+
+    private bool Deactivated = false;
+    public void Deactivate() {
+        Deactivated = true;
+    }
+    public bool GetDeactivated() {
+        return Deactivated;
+    }
 }
