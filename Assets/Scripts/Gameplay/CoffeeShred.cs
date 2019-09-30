@@ -12,6 +12,7 @@ public class CoffeeShred : NetworkBehaviour
     public GameObject Visual;
     public GameObject ShotFX;
     public Sprite Hit;
+    public AudioClip HitSound;
 
     bool initialized = false;
     Vector3 Direction = new Vector3(1,0,0);
@@ -51,7 +52,7 @@ public class CoffeeShred : NetworkBehaviour
                 var s = Random.Range(1.5f, 3.0f);
                 fx.transform.localScale = new Vector3(s, s, s);
                 fx.transform.localRotation = Quaternion.Euler(x, y, z);
-                fx.GetComponent<ShotFX>().Setup(Hit, Color.black, 0.15f);
+                fx.GetComponent<ShotFX>().Setup(Hit, Color.black, 0.15f, HitSound);
                 hit = true;
             }
             Destroy(this.gameObject);

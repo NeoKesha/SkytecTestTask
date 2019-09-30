@@ -19,7 +19,8 @@ public class PlayerController : NetworkBehaviour {
     public TouchControl MovementTouch;
     public TouchControl ShootingTouch;
     public Animator Animator;
-    public AudioSource Gunshot;
+    public AudioSource AudioSource;
+    public AudioClip[] Clips;
 
     public float CharacterSpeed = 5.0f;
     public float MaxHP = 100.0f;
@@ -80,7 +81,7 @@ public class PlayerController : NetworkBehaviour {
             var s = Random.Range(1.0f, 2.0f);
             fx.transform.localScale = new Vector3(s, s, s);
             fx.transform.localRotation = Quaternion.Euler(x, y, z);
-            fx.GetComponent<ShotFX>().Setup(BlodstainSprite, Color.red, 0.25f);
+            fx.GetComponent<ShotFX>().Setup(BlodstainSprite, Color.red, 0.25f, Clips[Random.Range(1, 4)]);
         }
     }
     private void OnTriggerEnter(Collider other) {
@@ -209,6 +210,11 @@ public class PlayerController : NetworkBehaviour {
         DeathScreen.SetActive(false);
         CmdRespawn();
     }
+
+    private void PlaySound(int id) {
+        AudioSource.clip = Clips[0];
+        AudioSource.Play();
+    }
     [Command]
     private void CmdRespawn() {
         HP = MaxHP;
@@ -232,10 +238,9 @@ public class PlayerController : NetworkBehaviour {
     }
     [ClientRpc]
     private void RpcPlayGunshot() {
-        Gunshot.Play();
         var fx = Instantiate(ShotFX, Barrel.transform.position, Barrel.transform.rotation , Barrel.transform);
         fx.transform.localRotation = Quaternion.Euler(0, 0, 90);
-        fx.GetComponent<ShotFX>().Setup(GunshotSprite, Color.white, 0.25f);
+        fx.GetComponent<ShotFX>().Setup(GunshotSprite, Color.white, 0.25f, Clips[0]);
     }
 
     public int GetFrags() { return Frags; }
