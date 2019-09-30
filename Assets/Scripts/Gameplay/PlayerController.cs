@@ -44,8 +44,10 @@ public class PlayerController : NetworkBehaviour {
     private bool Dead;
     private GameObject BeansCover;
 
+
     [SyncVar] private float HP;
     [SyncVar] private int Frags;
+    [SyncVar] private bool Hide;
 
     public void Start() {
         BeansCover = null;
@@ -64,6 +66,7 @@ public class PlayerController : NetworkBehaviour {
         HP = MaxHP;
         Frags = 0;
         Dead = false;
+        Hide = false;
     }
 
     private void OnCollisionEnter(Collision collision) {
@@ -81,7 +84,7 @@ public class PlayerController : NetworkBehaviour {
             var s = Random.Range(1.0f, 2.0f);
             fx.transform.localScale = new Vector3(s, s, s);
             fx.transform.localRotation = Quaternion.Euler(x, y, z);
-            fx.GetComponent<ShotFX>().Setup(BlodstainSprite, Color.red, 0.25f, Clips[Random.Range(1, 4)]);
+            fx.GetComponent<ShotFX>().Setup(BlodstainSprite, (GlobalContext.Settings["GORE"] == "1")?(Color.red):Color.black, 0.25f, Clips[Random.Range(1, 4)]);
         }
     }
     private void OnTriggerEnter(Collider other) {
@@ -95,19 +98,6 @@ public class PlayerController : NetworkBehaviour {
         }
     }
     public void Update() { // Animations and visuals
-        if (BeansCover) {
-            var b_dist = (BeansCover.transform.position - transform.position).magnitude;
-            var p_dist = (GlobalContext.LocalAuthority.transform.position - transform.position).magnitude;
-            var t = b_dist / 1.5f; //Half of width of bush + radius of player
-            var m_dist = CoverVisibilityStart * t + CoverVisibilityEnd * (1.0f - t);
-            if (p_dist > m_dist) {
-                VisibleBody.SetActive(false);
-            } else {
-                VisibleBody.SetActive(true);
-            }
-        } else if (!VisibleBody.activeSelf) {
-            VisibleBody.SetActive(true);
-        }
         if (!Dead && HP <= 0.0f) {
             Animator.SetTrigger("die");
             Dead = true;
@@ -116,6 +106,33 @@ public class PlayerController : NetworkBehaviour {
             Dead = false;
             fragged = false;
             respawning = false;
+        }
+        if (!Dead) {
+            if (BeansCover) {
+                var b_dist = (BeansCover.transform.position - transform.position).magnitude;
+                var p_dist = (GlobalContext.LocalAuthority.transform.position - transform.position).magnitude;
+                var t = b_dist / 1.5f; //Half of width of bush + radius of player
+                var m_dist = CoverVisibilityStart * t + CoverVisibilityEnd * (1.0f - t);
+                if (p_dist > m_dist) {
+                    VisibleBody.SetActive(false);
+                } else {
+                    VisibleBody.SetActive(true);
+                }
+            } else if (!VisibleBody.activeSelf) {
+                VisibleBody.SetActive(true);
+            }
+            if (!Controller.enabled) {
+                Controller.enabled = true;
+            }
+        } else {
+            if (Hide && VisibleBody.activeSelf) {
+                VisibleBody.SetActive(false);
+            } else if (!Hide && !VisibleBody.activeSelf) {
+                VisibleBody.SetActive(true);
+            }
+            if (Controller.enabled) {
+                Controller.enabled = false;
+            }
         }
     }
     public void FixedUpdate() { // Physics and movement
@@ -203,11 +220,13 @@ public class PlayerController : NetworkBehaviour {
     }
     private IEnumerator WaitForRespawn() {
         DeathScreen.SetActive(true);
+        CmdHideMe(true);
         for (int i = 0; i < RespawnTime; ++i) {
             Countdown.Tick(RespawnTime - i);
             yield return new WaitForSeconds(1.0f);
         }
         DeathScreen.SetActive(false);
+        CmdHideMe(false);
         CmdRespawn();
     }
 
@@ -215,9 +234,15 @@ public class PlayerController : NetworkBehaviour {
         AudioSource.clip = Clips[0];
         AudioSource.Play();
     }
+
+    [Command]
+    private void CmdHideMe(bool hide) {
+        Hide = hide;
+    }
     [Command]
     private void CmdRespawn() {
         HP = MaxHP;
+        Hide = false;
         gameObject.transform.position = GlobalContext.GetSpawnPoint(); // Because of this is had to set NetworkTransform to Translation instead of CharacterController Sync!
         RpcSyncYourCharacterSpawn(gameObject.transform.position);      // I tried everything.
     }
