@@ -11,6 +11,7 @@ public class CoffeeShred : NetworkBehaviour
     public float MaxScale = 1.6f;
     public GameObject Visual;
     public GameObject ShotFX;
+    public GameObject QuadFX;
     public Sprite Hit;
     public AudioClip HitSound;
 
@@ -20,6 +21,8 @@ public class CoffeeShred : NetworkBehaviour
     float Damage = 0.0f;
     float Speed = 15.0f;
     float TTL = 15.0f;
+
+    [SyncVar] public bool ActiveQuad = false;
     private void Start() {
         float s = Random.Range(MinScale, MaxScale);
         Visual.transform.localScale = new Vector3(s,s,s);
@@ -73,5 +76,11 @@ public class CoffeeShred : NetworkBehaviour
     }
     public bool GetDeactivated() {
         return Deactivated;
+    }
+    private void Update() {
+        if (!QuadFX.activeSelf && ActiveQuad) {
+            Damage *= 4.0f;
+            QuadFX.SetActive(true);
+        }
     }
 }

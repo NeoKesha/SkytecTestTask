@@ -1658,6 +1658,8 @@ MonoBehaviour:
   m_OnlineScene: 002_BattleArena
   m_SpawnPrefabs:
   - {fileID: 4805434848137812846, guid: 52808f91642086a438710bd1c046c4bc, type: 3}
+  - {fileID: 1494327554313849092, guid: 8a79734ffed7368478abd2f044793f2c, type: 3}
+  - {fileID: 6645056721542933617, guid: 663980dc883a4ac45b0be298c9dd99c6, type: 3}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:

@@ -12,8 +12,9 @@ public class MapGen : MonoBehaviour
     public GameObject B_Block;
 
     public GameObject Player;
+    public GameObject PickupSpawner;
 
-    void Start() {
+    void Awake() {
         string[] lines = LevelMap.text.Replace("\r\n", "\n").Split('\n');
         int width = 0;
         int height = lines.Length;
@@ -52,5 +53,6 @@ public class MapGen : MonoBehaviour
             x = 0;
             ++z;
         }
+        //if (isServer) Instantiate(PickupSpawner);
     }
 }

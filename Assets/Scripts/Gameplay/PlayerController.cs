@@ -8,6 +8,8 @@ public class PlayerController : NetworkBehaviour {
     public GameObject Camera;
     public GameObject GUI;
     public GameObject VisibleBody;
+    public GameObject QuadFX;
+    public GameObject Shield;
     public GameObject Barrel;
     public GameObject Bullet;
     public GameObject Pile;
@@ -50,6 +52,10 @@ public class PlayerController : NetworkBehaviour {
     [SyncVar] private int Frags;
     [SyncVar] private bool Hide;
 
+    [SyncVar] private float Energy;
+    [SyncVar] private float Invuln;
+    [SyncVar] private float Quad;
+
     public void Start() {
         BeansCover = null;
         movementDir = Vector3.up;
@@ -68,6 +74,9 @@ public class PlayerController : NetworkBehaviour {
         Frags = 0;
         Dead = false;
         Hide = false;
+        Energy = 0.0f;
+        Invuln = 0.0f;
+        Quad = 0.0f;
     }
 
     private void OnCollisionEnter(Collision collision) {
@@ -95,6 +104,19 @@ public class PlayerController : NetworkBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Cover")) {
             BeansCover = other.gameObject;
+        } else {
+            if (isServer) {
+                PickUp pick = other.gameObject.GetComponent<PickUp>();
+                if (pick) {
+                    HP += pick.GetHeal();
+                    if (HP > MaxHP) HP = MaxHP;
+                    Energy += pick.GetEnergy();
+                    Invuln += pick.GetInvuln();
+                    Quad += pick.GetQuad();
+                    Destroy(other.gameObject);
+                }
+            }
+            
         }
     }
     private void OnTriggerExit(Collider other) {
@@ -129,6 +151,16 @@ public class PlayerController : NetworkBehaviour {
             if (!Controller.enabled) {
                 Controller.enabled = true;
             }
+            if (Quad > 0.0f && !QuadFX.activeSelf) {
+                QuadFX.SetActive(true);
+            } else if (Quad <= 0.0f && QuadFX.activeSelf) {
+                QuadFX.SetActive(false);
+            }
+            if (Invuln > 0.0f && !Shield.activeSelf) {
+                Shield.SetActive(true);
+            } else if (Invuln <= 0.0f && Shield.activeSelf) {
+                Shield.SetActive(false);
+            }
         } else {
             if (Hide && VisibleBody.activeSelf) {
                 VisibleBody.SetActive(false);
@@ -146,6 +178,7 @@ public class PlayerController : NetworkBehaviour {
             float t = HP / MaxHP;
             if (t == 0.0f) t = 1.0f;
             float k = SpeedMultiplyStart * t + SpeedMultiplyEnd * (1.0f - t);
+            k *= (Energy > 0.0f) ? 4 : 1;
             if (!Dead) {
                 movementMagnitude = MovementTouch.GetMagnitude();
                 if (movementMagnitude > 0.0f) {
@@ -202,11 +235,25 @@ public class PlayerController : NetworkBehaviour {
                 StartCoroutine(WaitForRespawn());
             }
         }
+        if (isServer) {
+            if (Energy > 0.0f) {
+                Energy -= Time.deltaTime;
+                if (Energy < 0.0f) Energy = 0.0f;
+            }
+            if (Invuln > 0.0f) {
+                Invuln -= Time.deltaTime;
+                if (Invuln < 0.0f) Invuln = 0.0f;
+            }
+            if (Quad > 0.0f) {
+                Quad -= Time.deltaTime;
+                if (Quad < 0.0f) Quad = 0.0f;
+            }
+        }
     }
 
     private bool fragged = false;
     public void TakeDamage(float Damage, PlayerController attacker) {
-        if (!Dead && isServer) {
+        if (!Dead && isServer && Invuln <= 0.0f) {
             HP -= Damage;
             if (HP <= 0.0f) {
                 HP = 0.0f;
@@ -255,9 +302,13 @@ public class PlayerController : NetworkBehaviour {
 
     [Command]
     private void CmdShoot(Vector3 dir) {
+        var dmg = Damage / Pellets;
         for (int i = 0; i < Pellets; ++i) {
             var go = Instantiate(Bullet, Barrel.transform.position, Quaternion.Euler(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
-            go.GetComponent<CoffeeShred>().Init(dir, Damage / Pellets, this.gameObject);
+            go.GetComponent<CoffeeShred>().Init(dir, dmg, this.gameObject);
+            if (Quad > 0.0f) {
+                go.GetComponent<CoffeeShred>().ActiveQuad = true;
+            }
             NetworkServer.Spawn(go);
         }
         RpcPlayGunshot();
