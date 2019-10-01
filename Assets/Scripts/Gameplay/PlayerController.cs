@@ -14,6 +14,7 @@ public class PlayerController : NetworkBehaviour {
     public GameObject Bullet;
     public GameObject Pile;
     public GameObject ShotFX;
+    public UnityEngine.UI.Text NickNameText;
     public Sprite BlodstainSprite;
     public Sprite GunshotSprite;
     public GameObject LocalIndicator;
@@ -47,6 +48,8 @@ public class PlayerController : NetworkBehaviour {
     private bool Dead;
     private GameObject BeansCover;
 
+    [SyncVar] private string NickName;
+    private bool MyNameSent = false;
 
     [SyncVar] private float HP;
     [SyncVar] private int Frags;
@@ -59,6 +62,7 @@ public class PlayerController : NetworkBehaviour {
     public void Start() {
         BeansCover = null;
         movementDir = Vector3.up;
+        
     }
 
     public override void OnStartLocalPlayer() {
@@ -175,6 +179,9 @@ public class PlayerController : NetworkBehaviour {
     }
     public void FixedUpdate() { // Physics and movement
         if (isLocalPlayer) {
+            if (!MyNameSent) {
+                CmdSetMyName(GlobalContext.Settings["NAME"]);
+            }
             float t = HP / MaxHP;
             if (t == 0.0f) t = 1.0f;
             float k = SpeedMultiplyStart * t + SpeedMultiplyEnd * (1.0f - t);
@@ -289,6 +296,12 @@ public class PlayerController : NetworkBehaviour {
     }
 
     [Command]
+    private void CmdSetMyName(string nickName) {
+        NickName = nickName;
+        RpcUpdateNickname();
+    }
+
+    [Command]
     private void CmdHideMe(bool hide) {
         Hide = hide;
     }
@@ -323,6 +336,10 @@ public class PlayerController : NetworkBehaviour {
         var fx = Instantiate(ShotFX, Barrel.transform.position, Barrel.transform.rotation , Barrel.transform);
         fx.transform.localRotation = Quaternion.Euler(0, 0, 90);
         fx.GetComponent<ShotFX>().Setup(GunshotSprite, Color.white, 0.25f, Clips[0]);
+    }
+    [ClientRpc] 
+    private void RpcUpdateNickname() {
+        NickNameText.text = NickName;
     }
 
     public int GetFrags() { return Frags; }
