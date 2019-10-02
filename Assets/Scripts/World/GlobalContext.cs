@@ -9,8 +9,12 @@ public static class GlobalContext
     public static GameObject LocalAuthority;
     public static List<GameObject> Players;
     public static Dictionary<string, string> Settings;
+    public static Dictionary<string, Dictionary<string, string>> LanguageLines;
+    public static Dictionary<string, Dictionary<string, Sprite>> LanguageSprites;
 
     static GlobalContext() {
+        LanguageLines = new Dictionary<string, Dictionary<string, string>>();
+        LanguageSprites = new Dictionary<string, Dictionary<string, Sprite>>();
         Players = new List<GameObject>();
         Screen.SetResolution(992, 537, false);
         Application.targetFrameRate = 60;

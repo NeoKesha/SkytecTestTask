@@ -1,0 +1,15 @@
+yes = Yes
+no = No
+back = Back
+start = Start
+join = Join
+credits = Credits
+exit = Exit Game
+credits_text = Morning Coffe v 1.0.0 \nProgramming: Yashin Artyom \nGraphics, Edits, Animation: Yashin Artyom \nCharacter model: Horipu \nMusic: Bensound (Royalty Free) \n- Tomorrow \n- Extreme Action \nTextures: https://www.sketchuptextureclub.com/ \nSounds: freesound \nTest task for Skytec
+exit_text = Are you sure you want to exit?
+host_ip = Host IP
+violence = Violence:
+player_name = Player name:
+game_lang = Game language:
+match_exit = Are you sure you want to leave match?
+kill = killed

@@ -1,0 +1,1 @@
+heart_exploded = LangSprites/RU/ded

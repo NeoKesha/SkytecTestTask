@@ -268,7 +268,7 @@ public class PlayerController : NetworkBehaviour {
                 HP = 0.0f;
                 if (!fragged) {
                     attacker.AddFrag();
-                    CmdBroadcastMessage($"{attacker.GetName()} killed {NickName}!");
+                    CmdBroadcastMessage($"{attacker.GetName()} [kill] {NickName}! [yes]!");
                     fragged = true;
                 }
                 
@@ -335,6 +335,24 @@ public class PlayerController : NetworkBehaviour {
     }
     [ClientRpc]
     private void RpcSetNotification(string msg) {
+        List<string> keys = new List<string>();
+        int pos = 0;
+        bool flag = true;
+        while (flag && pos < msg.Length) {
+            int pos1 = msg.IndexOf('[', pos);
+            int pos2 = msg.IndexOf(']', pos);
+            if (pos1 != -1 && pos2 != -1 && pos1 < pos2) {
+                keys.Add(msg.Substring(pos1 + 1, pos2 - 1- pos1));
+            }
+            if (pos1 == -1 || pos2 == -1) {
+                flag = false;
+            } else {
+                pos = pos2 + 1;
+            }
+        }
+        foreach(var key in keys) {
+            msg = msg.Replace($"[{key}]", GlobalContext.LanguageLines[GlobalContext.Settings["LANG"]][key]);
+        }
         GlobalContext.LocalAuthority.GetComponent<PlayerController>().Notification.SetNotification(msg);
     }
     [ClientRpc]

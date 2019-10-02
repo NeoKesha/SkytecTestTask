@@ -1,0 +1,15 @@
+yes = Да
+no = Нет
+beack = Назад
+start = Старт
+join = Подключиться
+credits = Титры
+exit = Выход
+credits_text = Morning Coffe v 1.0.0 \nПрограммирование: Яшин Артём \nГрафика, Редактирование, Анимация: Яшин Артём \nМодель персонажа: Horipu \nМузыка: Bensound (Royalty Free) \n- Tomorrow \n- Extreme Action \nТекстуры: https://www.sketchuptextureclub.com/ \nЗвуки: freesound\nТестовое задание для Skytec
+exit_text = Вы действительно хотите выйти?
+host_ip = IP Адрес хоста
+violence = Насилие:
+player_name = Имя игрока:
+game_lang = Язык игры:
+match_exit = Вы действительно хотите покинуть матч?
+kill = убил
