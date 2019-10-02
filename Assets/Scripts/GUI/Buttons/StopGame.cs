@@ -13,6 +13,7 @@ public class StopGame : NetworkBehaviour
         } else {
             MyNetworkManager.singleton.StopClient();
         }
+        GlobalContext.Players.Clear();
         SceneManager.LoadScene(MainMenu);
     }
 }

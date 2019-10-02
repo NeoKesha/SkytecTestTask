@@ -7,9 +7,11 @@ public static class GlobalContext
     public static List<Vector3> SpawnPoints = new List<Vector3>();
     public static bool isServer = false;
     public static GameObject LocalAuthority;
+    public static List<GameObject> Players;
     public static Dictionary<string, string> Settings;
 
     static GlobalContext() {
+        Players = new List<GameObject>();
         Screen.SetResolution(992, 537, false);
         Application.targetFrameRate = 60;
         Physics.IgnoreLayerCollision(9, 9);

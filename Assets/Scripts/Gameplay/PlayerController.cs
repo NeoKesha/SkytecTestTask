@@ -62,7 +62,7 @@ public class PlayerController : NetworkBehaviour {
     public void Start() {
         BeansCover = null;
         movementDir = Vector3.up;
-        
+        GlobalContext.Players.Add(this.gameObject);
     }
 
     public override void OnStartLocalPlayer() {
@@ -344,6 +344,7 @@ public class PlayerController : NetworkBehaviour {
     }
 
     public int GetFrags() { return Frags; }
+    public string GetName() {  return NickName; }
     public float GetHealth() { return HP; }
     public bool GetVisible() { return VisibleBody.activeSelf; }
 }
