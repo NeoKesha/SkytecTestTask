@@ -14,6 +14,7 @@ public class PlayerController : NetworkBehaviour {
     public GameObject Bullet;
     public GameObject Pile;
     public GameObject ShotFX;
+    public Notification Notification;
     public UnityEngine.UI.Text NickNameText;
     public Sprite BlodstainSprite;
     public Sprite GunshotSprite;
@@ -267,6 +268,7 @@ public class PlayerController : NetworkBehaviour {
                 HP = 0.0f;
                 if (!fragged) {
                     attacker.AddFrag();
+                    CmdBroadcastMessage($"{attacker.GetName()} killed {NickName}!");
                     fragged = true;
                 }
                 
@@ -327,7 +329,14 @@ public class PlayerController : NetworkBehaviour {
         }
         RpcPlayGunshot();
     }
-
+    [Command] 
+    private void CmdBroadcastMessage(string msg) {
+        RpcSetNotification(msg);
+    }
+    [ClientRpc]
+    private void RpcSetNotification(string msg) {
+        GlobalContext.LocalAuthority.GetComponent<PlayerController>().Notification.SetNotification(msg);
+    }
     [ClientRpc]
     private void RpcSyncYourCharacterSpawn(Vector3 pos) {
         gameObject.transform.position = pos;
@@ -340,7 +349,7 @@ public class PlayerController : NetworkBehaviour {
     }
     [ClientRpc] 
     private void RpcUpdateNickname(string name) {
-        NickNameText.text = name;
+            NickNameText.text = name;
     }
 
     public int GetFrags() { return Frags; }
