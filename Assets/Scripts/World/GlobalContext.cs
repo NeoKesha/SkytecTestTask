@@ -21,7 +21,7 @@ public static class GlobalContext
         Settings.Add("LANG", "RU");
         Settings.Add("GORE", "1");
         Settings.Add("CHARACTER", "0");
-        Settings.Add("NAME", "Chara");
+        Settings.Add("NAME", "Frisk");
     }
     public static Vector3 GetSpawnPoint() {
         Vector3 shift = new Vector3(0, 1.5f, 0);

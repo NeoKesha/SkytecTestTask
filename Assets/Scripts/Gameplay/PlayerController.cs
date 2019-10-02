@@ -176,12 +176,13 @@ public class PlayerController : NetworkBehaviour {
                 Controller.enabled = false;
             }
         }
+        if (!MyNameSent) {
+            if (isLocalPlayer) CmdSetMyName(GlobalContext.Settings["NAME"]); else NickNameText.text = NickName;
+            MyNameSent = true;
+        }
     }
     public void FixedUpdate() { // Physics and movement
         if (isLocalPlayer) {
-            if (!MyNameSent) {
-                CmdSetMyName(GlobalContext.Settings["NAME"]);
-            }
             float t = HP / MaxHP;
             if (t == 0.0f) t = 1.0f;
             float k = SpeedMultiplyStart * t + SpeedMultiplyEnd * (1.0f - t);
@@ -298,7 +299,7 @@ public class PlayerController : NetworkBehaviour {
     [Command]
     private void CmdSetMyName(string nickName) {
         NickName = nickName;
-        RpcUpdateNickname();
+        RpcUpdateNickname(nickName);
     }
 
     [Command]
@@ -338,8 +339,8 @@ public class PlayerController : NetworkBehaviour {
         fx.GetComponent<ShotFX>().Setup(GunshotSprite, Color.white, 0.25f, Clips[0]);
     }
     [ClientRpc] 
-    private void RpcUpdateNickname() {
-        NickNameText.text = NickName;
+    private void RpcUpdateNickname(string name) {
+        NickNameText.text = name;
     }
 
     public int GetFrags() { return Frags; }
