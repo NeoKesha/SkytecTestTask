@@ -8,23 +8,9 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnStartServer() {
         base.OnStartServer();
-        //var c = NetworkServer.connections;
-        //var lc = NetworkServer.localConnections;
-        //int a = 0;
     }
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
-        GameObject player = (GameObject)Instantiate(playerPrefab, GlobalContext.GetSpawnPoint(), Quaternion.identity);
+        GameObject player = (GameObject)Instantiate(playerPrefab, GlobalContext.GetSpawnPoint(), Quaternion.identity); // Spawn player, using Global Spawner
         NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

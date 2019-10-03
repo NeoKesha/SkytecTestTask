@@ -5,82 +5,78 @@ using UnityEngine.Networking;
 
 public class CoffeeShred : NetworkBehaviour
 {
-    public float DirectionSpread = 7.5f;
-    public float SpeedSpread = 0.4f;
-    public float MinScale = 0.8f;
-    public float MaxScale = 1.6f;
-    public GameObject Visual;
-    public GameObject ShotFX;
-    public GameObject QuadFX;
-    public Sprite Hit;
-    public AudioClip HitSound;
+    public float directionSpread = 7.5f;
+    public float speedSpread = 0.4f;
+    public float minScale = 0.8f;
+    public float maxScale = 1.6f;
+    public GameObject visual;
+    public GameObject shotFX;
+    public GameObject quadFX;
+    public Sprite hitSprite;
+    public AudioClip hitSound;
 
     bool initialized = false;
-    Vector3 Direction = new Vector3(1,0,0);
-    GameObject Parent = null;
-    float Damage = 0.0f;
-    float Speed = 15.0f;
+    Vector3 direction = new Vector3(1,0,0);
+    GameObject parent = null;
+    float damage = 0.0f;
+    float speed = 15.0f;
     float TTL = 15.0f;
+    private bool deactivated = false;
+    private bool hit = false;
 
-    [SyncVar] public bool ActiveQuad = false;
+    [SyncVar] public bool activeQuad = false;
     private void Start() {
-        float s = Random.Range(MinScale, MaxScale);
-        Visual.transform.localScale = new Vector3(s,s,s);
-        Visual.transform.rotation = Quaternion.Euler(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f));
+        visual = transform.Find("Visual").gameObject;
+        if (visual) {
+            float s = Random.Range(minScale, maxScale);
+            visual.transform.localScale = new Vector3(s, s, s);
+            visual.transform.rotation = Quaternion.Euler(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f));
+        }
     }
     public void Init(Vector3 direction, float damage, GameObject parent) {
-        if (!initialized) {
-            Direction = Quaternion.AngleAxis(Random.Range(-DirectionSpread, DirectionSpread),Vector3.up)*direction;
-            Damage = damage;
-            Parent = parent;
-            Speed = Speed * (1 - SpeedSpread) + Speed * Random.Range(0, SpeedSpread);
+        if (!initialized) { // Make sure Coffee Shred will be initialized only once
+            this.direction = Quaternion.AngleAxis(Random.Range(-directionSpread, directionSpread), Vector3.up)* direction;
+            this.damage = damage;
+            this.parent = parent;
+            speed = speed * (1 - speedSpread) + speed * Random.Range(0, speedSpread);
             Destroy(this.gameObject, TTL);
-            GetComponent<Rigidbody>().velocity = Direction * Speed;
-            // Ignore collisions between parent and bullets
-            Physics.IgnoreCollision(GetComponent<Collider>(), Parent.GetComponent<Collider>());
+            GetComponent<Rigidbody>().velocity = this.direction * speed;
+            Physics.IgnoreCollision(GetComponent<Collider>(), this.parent.GetComponent<Collider>()); // Ignore collisions between parent and bullets
             initialized = true;
         }
     }
 
 
-    private bool hit = false;
+    
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.CompareTag("Impassable")) {
             if (!hit) {
-                var fx = Instantiate(ShotFX, collision.GetContact(0).point, collision.transform.rotation, collision.transform);
+                // Create and align hit with surface
+                var fx = Instantiate(shotFX, collision.GetContact(0).point, collision.transform.rotation, collision.transform);
                 var normal = collision.GetContact(0).normal;
-                var x = Vector3.Angle(normal, Vector3.right) + 90;
-                var y = Vector3.Angle(normal, Vector3.up);
-                var z = Vector3.Angle(normal, Vector3.back);
                 var s = Random.Range(1.5f, 3.0f);
                 fx.transform.localScale = new Vector3(s, s, s);
+                var x = Vector3.Angle(normal, Vector3.right) + 90;
+                var y = Vector3.Angle(normal, Vector3.down);
+                var z = Vector3.Angle(normal, Vector3.back);
                 fx.transform.localRotation = Quaternion.Euler(x, y, z);
-                fx.GetComponent<ShotFX>().Setup(Hit, Color.black, 0.15f, HitSound);
+                fx.GetComponent<ShotFX>().Setup(hitSprite, Color.black, 0.15f, hitSound);
                 hit = true;
             }
             Destroy(this.gameObject);
         }
     }
-
-    public float GetDamage() {
-        return Damage;
-    }
-
-    public GameObject GetParent() {
-        return Parent;
-    }
-
-    private bool Deactivated = false;
-    public void Deactivate() {
-        Deactivated = true;
-    }
-    public bool GetDeactivated() {
-        return Deactivated;
-    }
     private void Update() {
-        if (!QuadFX.activeSelf && ActiveQuad) {
-            Damage *= 4.0f;
-            QuadFX.SetActive(true);
+        if (quadFX) {
+            if (!quadFX.activeSelf && activeQuad) {
+                damage *= 4.0f; //Make bullet Quad Damage and make sure only once
+                quadFX.SetActive(true);
+            }
         }
     }
+
+    public void Deactivate() { deactivated = true; }
+    public float GetDamage() { return damage; }
+    public bool GetDeactivated() { return deactivated; }
+    public GameObject GetParent() { return parent; }
 }

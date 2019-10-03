@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6446e63671547994e8f2ecab6b7e5b2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Spark: {fileID: 21300000, guid: 541f7dcb3bf140a498c7d4aab8e2821f, type: 3}
+  spark: {fileID: 21300000, guid: 541f7dcb3bf140a498c7d4aab8e2821f, type: 3}
   FX: {fileID: 6535236155995150304, guid: af8fdde2276642b4999c9e9fd3dce36b, type: 3}
-  Snd: {fileID: 8300000, guid: dc2bd3b33e25b364ab5b298f8c1f6c55, type: 3}
-  Rate: 0.2
+  snd: {fileID: 8300000, guid: dc2bd3b33e25b364ab5b298f8c1f6c55, type: 3}
+  rate: 0.2

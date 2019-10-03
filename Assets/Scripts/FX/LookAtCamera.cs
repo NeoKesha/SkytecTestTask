@@ -12,8 +12,11 @@ public class LookAtCamera : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        Vector3 camPos = Camera.main.transform.position;
-        transform.LookAt( new Vector3(transform.position.x, camPos.y, camPos.z));
-        transform.Rotate(new Vector3(0, 180, 0));
+        Camera mainCamera = Camera.main;
+        if (mainCamera) {
+            Vector3 camPos = mainCamera.transform.position;
+            transform.LookAt(new Vector3(transform.position.x, camPos.y, camPos.z)); //Rotate object towards camera
+            transform.Rotate(new Vector3(0, 180, 0));
+        }
     }
 }

@@ -209,15 +209,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eacc333a9314cd540887e4ad3adf9c24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DirectionSpread: 15
-  SpeedSpread: 0.3
-  MinScale: 0.8
-  MaxScale: 1.2
-  Visual: {fileID: 967621237998575683}
-  ShotFX: {fileID: 6535236155995150304, guid: af8fdde2276642b4999c9e9fd3dce36b, type: 3}
-  QuadFX: {fileID: 8868272217533771107}
-  Hit: {fileID: 21300000, guid: e11021d1a5625724cb03994bef5260ff, type: 3}
-  HitSound: {fileID: 8300000, guid: bcc87368d60849145a6474a48e357fe4, type: 3}
+  directionSpread: 7.5
+  speedSpread: 0.4
+  minScale: 0.8
+  maxScale: 1.6
+  visual: {fileID: 967621237998575683}
+  shotFX: {fileID: 6535236155995150304, guid: af8fdde2276642b4999c9e9fd3dce36b, type: 3}
+  quadFX: {fileID: 8868272217533771107}
+  hitSprite: {fileID: 21300000, guid: e11021d1a5625724cb03994bef5260ff, type: 3}
+  hitSound: {fileID: 8300000, guid: bcc87368d60849145a6474a48e357fe4, type: 3}
+  activeQuad: 0
 --- !u!54 &-8145106000304811504
 Rigidbody:
   m_ObjectHideFlags: 0

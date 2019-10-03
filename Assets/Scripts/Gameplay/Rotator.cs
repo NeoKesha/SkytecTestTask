@@ -8,12 +8,12 @@ public class Rotator : MonoBehaviour
     public Vector3 RotationSpeed = new Vector3(0,30,0);
     void Start()
     {
-        transform.Rotate(new Vector3(0,Random.Range(0,360),0));
+        transform.Rotate(new Vector3(0,Random.Range(0,360),0)); //Random start shift
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Rotate(RotationSpeed * Time.deltaTime);
+        transform.Rotate(RotationSpeed * Time.deltaTime); //Just rotate.
     }
 }

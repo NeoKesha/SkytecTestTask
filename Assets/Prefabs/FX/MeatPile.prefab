@@ -44,13 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30311d21bfbd28841b8db865be555500, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Gib: {fileID: 8552160852310402624, guid: 19c3859dc6f3b2648b8d067870c14f63, type: 3}
-  MinGibs: 5
-  MaxGibs: 7
+  gib: {fileID: 8552160852310402624, guid: 19c3859dc6f3b2648b8d067870c14f63, type: 3}
+  minGibs: 5
+  maxGibs: 7
   TTL: 5
-  DownSpeed: 0.2
-  ShrinkSpeed: 0.2
-  Wait: 1
+  downSpeed: 0.2
+  shrinkSpeed: 0.2
+  wait: 1
 --- !u!1001 &6658520326254716500
 PrefabInstance:
   m_ObjectHideFlags: 0

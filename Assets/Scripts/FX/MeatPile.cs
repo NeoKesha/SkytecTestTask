@@ -4,25 +4,26 @@ using UnityEngine;
 
 public class MeatPile : MonoBehaviour
 {
-    public GameObject Gib;
-    public int MinGibs = 5;
-    public int MaxGibs = 7;
+    public GameObject gib;
+    public int minGibs = 5;
+    public int maxGibs = 7;
     public float TTL = 5.0f;
 
-    public float DownSpeed = 0.2f;
-    public float ShrinkSpeed = 0.2f;
-    public float Wait = 1.0f;
+    public float downSpeed = 0.2f;
+    public float shrinkSpeed = 0.2f;
+    public float wait = 1.0f;
 
     private bool shrink = false;
-    private float Scale = 1.0f;
+    private float scale = 1.0f;
     // Start is called before the first frame update
     void Start()
     {
-        int Gibs = Random.Range(MinGibs, MaxGibs + 1);
-        for (int i = 0; i < Gibs; ++i) {
-            var gib = Instantiate(Gib, transform.position, new Quaternion());
-            gib.GetComponent<Rigidbody>().velocity = (Quaternion.Euler(Random.Range(-30,30),0, Random.Range(-30, 30))*Vector3.up) * Random.Range(5.0f, 15.0f);
-            Destroy(gib, TTL);
+        if (!gib) gameObject.SetActive(false); // If Gib prefab is missing, shut down
+        int gibs = Random.Range(minGibs, maxGibs + 1); // Select number of gibs to create
+        for (int i = 0; i < gibs; ++i) {
+            var newGib = Instantiate(gib, transform.position, new Quaternion());
+            newGib.GetComponent<Rigidbody>().velocity = (Quaternion.Euler(Random.Range(-30,30),0, Random.Range(-30, 30))*Vector3.up) * Random.Range(5.0f, 15.0f); //Propell gib upwards
+            Destroy(newGib, TTL);
         }
         StartCoroutine(FadeOut());
     }
@@ -31,13 +32,14 @@ public class MeatPile : MonoBehaviour
     void Update()
     {
         if (shrink) {
-            Scale -= ShrinkSpeed * Time.deltaTime;
-            transform.position = transform.position - new Vector3(0,DownSpeed * Time.deltaTime,0);
-            transform.localScale = new Vector3(Scale, Scale, Scale);
+            scale -= shrinkSpeed * Time.deltaTime;
+            transform.position = transform.position - new Vector3(0,downSpeed * Time.deltaTime,0); // Soak into floor
+            transform.localScale = new Vector3(scale, scale, scale);
+            if (scale <= 0.01f) Destroy(this.gameObject); // If pile is too small, destroy it.
         }
     }
     private IEnumerator FadeOut() {
-        yield return new WaitForSeconds(Wait);
+        yield return new WaitForSeconds(wait); // Wait until pile will start to disappear
         shrink = true;
     }
 }

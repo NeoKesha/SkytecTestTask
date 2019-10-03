@@ -38,13 +38,13 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.17276844, g: 0.21589246, b: 0.2978263, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 1
+  m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -405,6 +405,67 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPlayerAuthority
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: spawnRates.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: itemAbilities.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: pickup
+      value: 
+      objectReference: {fileID: 1494327554313849092, guid: 8a79734ffed7368478abd2f044793f2c,
+        type: 3}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: spawnRates.Array.data[0]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: spawnRates.Array.data[1]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: spawnRates.Array.data[2]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: spawnRates.Array.data[3]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: itemAbilities.Array.data[0].x
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: itemAbilities.Array.data[1].y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: itemAbilities.Array.data[2].z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: itemAbilities.Array.data[3].y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256734473636200825, guid: 663980dc883a4ac45b0be298c9dd99c6,
+        type: 3}
+      propertyPath: itemAbilities.Array.data[3].w
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 663980dc883a4ac45b0be298c9dd99c6, type: 3}

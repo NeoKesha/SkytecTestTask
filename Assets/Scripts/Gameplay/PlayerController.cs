@@ -144,23 +144,25 @@ public class PlayerController : NetworkBehaviour {
                 var b_dist = (BeansCover.transform.position - transform.position).magnitude;
                 var p_dist = (GlobalContext.LocalAuthority.transform.position - transform.position).magnitude;
                 var t = b_dist / 1.5f; //Half of width of bush + radius of player
-                var m_dist = CoverVisibilityStart * t + CoverVisibilityEnd * (1.0f - t);
+                var m_dist = Mathf.Lerp(CoverVisibilityEnd, CoverVisibilityStart,t); // How close foe have to be to see us in bush depends on how are we close to center of bush
                 if (p_dist > m_dist) {
                     VisibleBody.SetActive(false);
                 } else {
                     VisibleBody.SetActive(true);
                 }
             } else if (!VisibleBody.activeSelf) {
-                VisibleBody.SetActive(true);
+                VisibleBody.SetActive(true); // If not visible outside of bush, go visible
             }
             if (!Controller.enabled) {
                 Controller.enabled = true;
             }
+            // Quad damage effect
             if (Quad > 0.0f && !QuadFX.activeSelf) {
                 QuadFX.SetActive(true);
             } else if (Quad <= 0.0f && QuadFX.activeSelf) {
                 QuadFX.SetActive(false);
             }
+            // Shield effect
             if (Invuln > 0.0f && !Shield.activeSelf) {
                 Shield.SetActive(true);
             } else if (Invuln <= 0.0f && Shield.activeSelf) {
@@ -168,6 +170,7 @@ public class PlayerController : NetworkBehaviour {
             }
         } else {
             if (Hide && VisibleBody.activeSelf) {
+                // Excecute only once
                 VisibleBody.SetActive(false);
                 if (GlobalContext.Settings["GORE"] == "1") Instantiate(Pile, transform.position + new Vector3(0,0.8f,0), new Quaternion());
             } else if (!Hide && !VisibleBody.activeSelf) {
@@ -186,9 +189,10 @@ public class PlayerController : NetworkBehaviour {
         if (isLocalPlayer) {
             float t = HP / MaxHP;
             if (t == 0.0f) t = 1.0f;
-            float k = SpeedMultiplyStart * t + SpeedMultiplyEnd * (1.0f - t);
-            k *= (Energy > 0.0f) ? 4 : 1;
+            float k = Mathf.Lerp(SpeedMultiplyEnd, SpeedMultiplyStart, t); // Lower our health, more coffee we have, faster we are
+            k *= (Energy > 0.0f) ? 4 : 1; // Quad speed under energetic 
             if (!Dead) {
+                // Fetch controls
                 movementMagnitude = MovementTouch.GetMagnitude();
                 if (movementMagnitude > 0.0f) {
                     movementDir = MovementTouch.GetDirection();
@@ -197,7 +201,9 @@ public class PlayerController : NetworkBehaviour {
                 aimingMagnitude = ShootingTouch.GetMagnitude();
                 aimingDir = ShootingTouch.GetDirection();
                 aimingAngle = Vector2.SignedAngle(new Vector2(aimingDir.x, aimingDir.y), Vector2.up);
+                // Simple movement
                 Controller.SimpleMove(CharacterSpeed * (new Vector3(movementDir.x, 0, movementDir.y)) * movementMagnitude*k);
+                // Anamation control
                 bool animator_running = Animator.GetBool("running");
                 bool animator_shooting = Animator.GetBool("shooting");
                 Animator.SetFloat("speed", k);
@@ -207,14 +213,14 @@ public class PlayerController : NetworkBehaviour {
                     Animator.SetBool("running", false);
                 }
                 if (!animator_shooting) {
-                    if (aimingMagnitude >= 0.8) {
+                    if (aimingMagnitude >= 0.8) { // Manually aim
                         CmdShoot(new Vector3(aimingDir.x, 0, aimingDir.y));
                         Animator.SetBool("shooting", true);
-                    } else if (ShootingTouch.GetReleased() && ShootingTouch.GetCaptured()) {
+                    } else if (ShootingTouch.GetReleased() && ShootingTouch.GetCaptured()) { // Auto aim nearest player
                         var colliders = Physics.OverlapSphere(transform.position,8,LayerMask.GetMask("Character"));
                         var nearest = float.MaxValue;
                         aimingDir = movementDir;
-                        foreach (var c in colliders) {
+                        foreach (var c in colliders) { // Scan for game objects of player character
                             var go = c.gameObject;
                             if (go == gameObject)
                                 continue; // Not me!
@@ -235,9 +241,9 @@ public class PlayerController : NetworkBehaviour {
                     }
                 }
                 if (aimingMagnitude == 0.0 && movementMagnitude > 0.0) {
-                    VisibleBody.transform.rotation = Quaternion.AngleAxis(movementAngle, Vector3.up);
+                    VisibleBody.transform.rotation = Quaternion.AngleAxis(movementAngle, Vector3.up); // If we move, face towards movement
                 } else if (aimingMagnitude > 0.3) {
-                    VisibleBody.transform.rotation = Quaternion.AngleAxis(aimingAngle, Vector3.up);
+                    VisibleBody.transform.rotation = Quaternion.AngleAxis(aimingAngle, Vector3.up); // If we shoot, face towards aim
                 }
             } else if (Animator.GetBool("died") && !respawning) {
                 respawning = true;
@@ -262,14 +268,14 @@ public class PlayerController : NetworkBehaviour {
 
     private bool fragged = false;
     public void TakeDamage(float Damage, PlayerController attacker) {
-        if (!Dead && isServer && Invuln <= 0.0f) {
+        if (!Dead && isServer && Invuln <= 0.0f && attacker.gameObject != this.gameObject) {
             HP -= Damage;
             if (HP <= 0.0f) {
                 HP = 0.0f;
                 if (!fragged) {
                     attacker.AddFrag();
-                    CmdBroadcastMessage($"{attacker.GetName()} [kill] {NickName}! [yes]!");
-                    fragged = true;
+                    CmdBroadcastMessage($"{attacker.GetName()} [kill] {NickName}! [yes]!"); // Broadcast message to all players, that kill happened
+                    fragged = true; // No double fragging, if bullet hist dead character
                 }
                 
             }
@@ -284,7 +290,7 @@ public class PlayerController : NetworkBehaviour {
     private IEnumerator WaitForRespawn() {
         DeathScreen.SetActive(true);
         CmdHideMe(true);
-        for (int i = 0; i < RespawnTime; ++i) {
+        for (int i = 0; i < RespawnTime; ++i) { // Control Countdown 
             Countdown.Tick(RespawnTime - i);
             yield return new WaitForSeconds(1.0f);
         }
@@ -318,12 +324,12 @@ public class PlayerController : NetworkBehaviour {
 
     [Command]
     private void CmdShoot(Vector3 dir) {
-        var dmg = Damage / Pellets;
+        var dmg = Damage / Pellets; // Divide total damage output of player by number of pellets in shot
         for (int i = 0; i < Pellets; ++i) {
             var go = Instantiate(Bullet, Barrel.transform.position, Quaternion.Euler(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
             go.GetComponent<CoffeeShred>().Init(dir, dmg, this.gameObject);
             if (Quad > 0.0f) {
-                go.GetComponent<CoffeeShred>().ActiveQuad = true;
+                go.GetComponent<CoffeeShred>().activeQuad = true;
             }
             NetworkServer.Spawn(go);
         }
@@ -338,6 +344,7 @@ public class PlayerController : NetworkBehaviour {
         List<string> keys = new List<string>();
         int pos = 0;
         bool flag = true;
+        // To preserve multi-language feature, we need to parse broadcasted message
         while (flag && pos < msg.Length) {
             int pos1 = msg.IndexOf('[', pos);
             int pos2 = msg.IndexOf(']', pos);
